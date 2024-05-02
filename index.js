@@ -1,6 +1,3 @@
-const dns = require('dns');
-
-// Function to verify email address existence using DNS MX lookup
 async function verifyEmailAddress(email) {
     try {
         const [, domain] = email.split('@'); // Extract domain from email address
@@ -8,14 +5,17 @@ async function verifyEmailAddress(email) {
             throw new Error('Invalid email address');
         }
 
-        // Perform DNS MX lookup for the domain
-        const mxRecords = await dns.promises.resolveMx(domain);
+        // Perform DNS MX lookup using a DNS-over-HTTPS (DoH) service
+        const dnsApiUrl = `https://dns.google/resolve?name=${domain}&type=MX`;
+        const response = await fetch(dnsApiUrl);
+        const data = await response.json();
 
-        // If we have any MX records, assume email domain is valid
+        // Check if MX records exist in the response
+        const mxRecords = data.Answer;
         if (mxRecords && mxRecords.length > 0) {
-            return true;
+            return true; // Email domain is valid
         } else {
-            return false;
+            return false; // No MX records found
         }
     } catch (error) {
         console.error('Error verifying email address:', error.message);
