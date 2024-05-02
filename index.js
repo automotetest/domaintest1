@@ -24,7 +24,7 @@ async function verifyEmailAddress(email) {
 }
 
 // Example usage
-const emailToVerify = 'example@example.com';
+const emailToVerify = 'aaron@automote.com';
 verifyEmailAddress(emailToVerify)
     .then(valid => {
         if (valid) {
